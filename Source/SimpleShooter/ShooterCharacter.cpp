@@ -2,13 +2,13 @@
 
 
 #include "ShooterCharacter.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 AShooterCharacter::AShooterCharacter()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
 }
 
 // Called when the game starts or when spawned
@@ -30,5 +30,38 @@ void AShooterCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+	PlayerInputComponent->BindAction(TEXT("Jump"), IE_Pressed, this, &ACharacter::Jump);
+
+	PlayerInputComponent->BindAxis(TEXT("MoveForward"), this, &AShooterCharacter::MoveForward);
+	PlayerInputComponent->BindAxis(TEXT("MoveSideways"), this, &AShooterCharacter::MoveSideways);
+	PlayerInputComponent->BindAxis(TEXT("LookUp"), this, &AShooterCharacter::LookUp);
+	PlayerInputComponent->BindAxis(TEXT("Turn"), this, &AShooterCharacter::Turn);
 }
+
+void AShooterCharacter::MoveForward(float Value)
+{
+	float Speed = Value * UGameplayStatics::GetWorldDeltaSeconds(this) * ForwardMovementSpeed;
+	AddMovementInput(GetActorForwardVector() * Speed);
+}
+
+void AShooterCharacter::MoveSideways(float Value)
+{
+	float Speed = Value * UGameplayStatics::GetWorldDeltaSeconds(this) * ForwardMovementSpeed;
+	AddMovementInput(GetActorRightVector() * Speed);
+}
+
+void AShooterCharacter::LookUp(float Value)
+{
+	AddControllerPitchInput(Value * LookAroundSpeed);
+}
+
+void AShooterCharacter::Turn(float Value)
+{
+	AddControllerYawInput(Value * LookAroundSpeed);
+}
+
+//void AShooterCharacter::DoJump()
+//{
+//	Jump();
+//}
 

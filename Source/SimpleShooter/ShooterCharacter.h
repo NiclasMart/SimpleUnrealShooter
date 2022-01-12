@@ -26,4 +26,15 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+private:
+	UPROPERTY(EditAnywhere, Category="Movement")
+		float ForwardMovementSpeed = 1.f;
+	UPROPERTY(EditAnywhere, Category = "Movement")
+		float LookAroundSpeed = 1.f;
+
+	void MoveForward(float Value);
+	void MoveSideways(float Value);
+	void LookUp(float Value);
+	void Turn(float Value);
+	/*void DoJump();*/
 };
