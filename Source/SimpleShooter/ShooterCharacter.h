@@ -34,6 +34,12 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Movement")
 		float LookAroundSpeedController = 1.f;
 
+	UPROPERTY(EditDefaultsOnly)
+		TSubclassOf<class AWeapon> WeaponBlueprint;
+
+	UPROPERTY()
+		AWeapon* Weapon;
+
 	void MoveForward(float Value);
 	void MoveSideways(float Value);
 	void LookUp(float Value);

@@ -2,7 +2,10 @@
 
 
 #include "ShooterCharacter.h"
+
+
 #include "Kismet/GameplayStatics.h"
+#include "Weapon.h"
 
 // Sets default values
 AShooterCharacter::AShooterCharacter()
@@ -15,7 +18,11 @@ AShooterCharacter::AShooterCharacter()
 void AShooterCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	GetMesh()->HideBoneByName(TEXT("weapon_r"), EPhysBodyOp::PBO_None);	//hide existing bone with weapon (mesh specific)
+	Weapon = GetWorld()->SpawnActor<AWeapon>(WeaponBlueprint);	//spawns actor into the world
+	Weapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, TEXT("WeaponSocket")); //attaches weapon to socket on the mesh
+	Weapon->SetOwner(this); //set owner of the weapon
 }
 
 // Called every frame
