@@ -30,11 +30,14 @@ private:
 	UPROPERTY(EditAnywhere, Category="Movement")
 		float ForwardMovementSpeed = 1.f;
 	UPROPERTY(EditAnywhere, Category = "Movement")
-		float LookAroundSpeed = 1.f;
+		float LookAroundSpeedMouse = 1.f;
+	UPROPERTY(EditAnywhere, Category = "Movement")
+		float LookAroundSpeedController = 1.f;
 
 	void MoveForward(float Value);
 	void MoveSideways(float Value);
 	void LookUp(float Value);
 	void Turn(float Value);
-	/*void DoJump();*/
+	void LookUpRate(float Value);
+	void TurnRate(float Value);
 };

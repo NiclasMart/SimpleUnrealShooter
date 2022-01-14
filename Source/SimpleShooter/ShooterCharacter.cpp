@@ -36,32 +36,41 @@ void AShooterCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 	PlayerInputComponent->BindAxis(TEXT("MoveSideways"), this, &AShooterCharacter::MoveSideways);
 	PlayerInputComponent->BindAxis(TEXT("LookUp"), this, &AShooterCharacter::LookUp);
 	PlayerInputComponent->BindAxis(TEXT("Turn"), this, &AShooterCharacter::Turn);
+	//controller bindings
+	PlayerInputComponent->BindAxis(TEXT("LookUpRate"), this, &AShooterCharacter::LookUpRate);
+	PlayerInputComponent->BindAxis(TEXT("TurnRate"), this, &AShooterCharacter::TurnRate);
 }
 
 void AShooterCharacter::MoveForward(float Value)
 {
-	float Speed = Value * UGameplayStatics::GetWorldDeltaSeconds(this) * ForwardMovementSpeed;
+	float Speed = Value * ForwardMovementSpeed;
 	AddMovementInput(GetActorForwardVector() * Speed);
 }
 
 void AShooterCharacter::MoveSideways(float Value)
 {
-	float Speed = Value * UGameplayStatics::GetWorldDeltaSeconds(this) * ForwardMovementSpeed;
+	float Speed = Value * ForwardMovementSpeed;
 	AddMovementInput(GetActorRightVector() * Speed);
 }
 
 void AShooterCharacter::LookUp(float Value)
 {
-	AddControllerPitchInput(Value * LookAroundSpeed);
+	AddControllerPitchInput(Value * LookAroundSpeedMouse);
 }
 
 void AShooterCharacter::Turn(float Value)
 {
-	AddControllerYawInput(Value * LookAroundSpeed);
+	AddControllerYawInput(Value * LookAroundSpeedMouse);
 }
 
-//void AShooterCharacter::DoJump()
-//{
-//	Jump();
-//}
+void AShooterCharacter::LookUpRate(float Value)
+{
+	AddControllerPitchInput(Value * LookAroundSpeedController * UGameplayStatics::GetWorldDeltaSeconds(this));
+}
+
+void AShooterCharacter::TurnRate(float Value)
+{
+	AddControllerYawInput(Value * LookAroundSpeedController * UGameplayStatics::GetWorldDeltaSeconds(this));
+}
+
 
