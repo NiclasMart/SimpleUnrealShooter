@@ -4,6 +4,7 @@
 #include "Weapon.h"
 
 #include "Components/SkeletalMeshComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 AWeapon::AWeapon()
@@ -18,6 +19,13 @@ AWeapon::AWeapon()
 	MeshComp->SetupAttachment(Root);
 	
 
+}
+
+bool AWeapon::Fire()
+{
+	UGameplayStatics::SpawnEmitterAttached(MuzzleFlash, MeshComp, TEXT("MuzzleFlashSocket"));
+	UE_LOG(LogTemp, Warning, TEXT("Fire Weapon"));
+	return true;
 }
 
 // Called when the game starts or when spawned

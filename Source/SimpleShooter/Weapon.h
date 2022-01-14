@@ -15,6 +15,8 @@ public:
 	// Sets default values for this actor's properties
 	AWeapon();
 
+	bool Fire();
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -28,5 +30,8 @@ private:
 		USceneComponent* Root;
 	UPROPERTY(VisibleAnywhere)
 		class USkeletalMeshComponent* MeshComp;
+
+	UPROPERTY(EditAnywhere)
+		class UParticleSystem* MuzzleFlash;
 
 };

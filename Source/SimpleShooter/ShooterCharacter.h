@@ -46,4 +46,6 @@ private:
 	void Turn(float Value);
 	void LookUpRate(float Value);
 	void TurnRate(float Value);
+
+	void FireWeapon();
 };
