@@ -39,6 +39,8 @@ private:
 
 	UPROPERTY()
 		AWeapon* Weapon;
+	UPROPERTY()
+		class APlayerController* PlayerController;
 
 	void MoveForward(float Value);
 	void MoveSideways(float Value);

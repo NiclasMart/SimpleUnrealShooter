@@ -3,6 +3,7 @@
 
 #include "Weapon.h"
 
+#include "DrawDebugHelpers.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -35,14 +36,19 @@ void AWeapon::Tick(float DeltaTime)
 
 }
 
-bool AWeapon::PullTrigger()
+bool AWeapon::PullTrigger(FVector AimLocation,  FVector AimDirection)
 {
-	if (CurrentAmmunition > 0)
-	{
-		Fire();
-		return true;
-	}
-	else return false;
+	if (CurrentAmmunition <= 0) return false;
+	
+	Fire();
+
+	DrawDebugLine(GetWorld(), AimLocation, AimLocation + AimDirection * 1000.f, FColor::Red, false, 3.f);
+	FHitResult Hit;
+	bool bHit = GetWorld()->LineTraceSingleByChannel(Hit, AimLocation, AimLocation + AimDirection * 1000.f, ECollisionChannel::ECC_GameTraceChannel1);
+	if (bHit) DrawDebugPoint(GetWorld(), Hit.Location, 20, FColor::Red, true);		
+	
+	return true;
+	
 }
 
 void AWeapon::Fire()

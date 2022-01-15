@@ -3,7 +3,7 @@
 
 #include "ShooterCharacter.h"
 
-
+#include "GameFramework/PlayerController.h"
 #include "Kismet/GameplayStatics.h"
 #include "Weapon.h"
 
@@ -23,6 +23,8 @@ void AShooterCharacter::BeginPlay()
 	Weapon = GetWorld()->SpawnActor<AWeapon>(WeaponBlueprint);	//spawns actor into the world
 	Weapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, TEXT("WeaponSocket")); //attaches weapon to socket on the mesh
 	Weapon->SetOwner(this); //set owner of the weapon
+
+	PlayerController = GetWorld()->GetFirstPlayerController();
 }
 
 // Called every frame
@@ -83,7 +85,15 @@ void AShooterCharacter::TurnRate(float Value)
 
 void AShooterCharacter::FireWeapon()
 {
-	bool MunitionWasEmpty = !Weapon->PullTrigger();
+	if (!PlayerController) return;
+	
+	FVector Location;
+	FRotator Rotation;
+	PlayerController->GetPlayerViewPoint(Location, Rotation);
+	/*FVector Direction = ;*/
+	bool MunitionWasEmpty = !Weapon->PullTrigger(Location, Rotation.Vector());
 	if (MunitionWasEmpty) Weapon->Reload();
 }
+
+
 

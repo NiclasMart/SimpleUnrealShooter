@@ -15,7 +15,7 @@ public:
 	// Sets default values for this actor's properties
 	AWeapon();
 
-	bool PullTrigger();
+	bool PullTrigger(FVector AimLocation, FVector AimDirection);
 	void Reload();
 
 protected:
