@@ -15,11 +15,15 @@ public:
 	// Sets default values for this actor's properties
 	AWeapon();
 
-	bool Fire();
+	bool PullTrigger();
+	void Reload();
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	void Fire();
+	
 
 public:	
 	// Called every frame
@@ -30,8 +34,12 @@ private:
 		USceneComponent* Root;
 	UPROPERTY(VisibleAnywhere)
 		class USkeletalMeshComponent* MeshComp;
-
 	UPROPERTY(EditAnywhere)
 		class UParticleSystem* MuzzleFlash;
+
+	UPROPERTY(EditDefaultsOnly)
+		int32 MagazinSize = 10;
+
+	int32 CurrentAmmunition;
 
 };

@@ -21,18 +21,11 @@ AWeapon::AWeapon()
 
 }
 
-bool AWeapon::Fire()
-{
-	UGameplayStatics::SpawnEmitterAttached(MuzzleFlash, MeshComp, TEXT("MuzzleFlashSocket"));
-	UE_LOG(LogTemp, Warning, TEXT("Fire Weapon"));
-	return true;
-}
-
-// Called when the game starts or when spawned
 void AWeapon::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	CurrentAmmunition = MagazinSize;
 }
 
 // Called every frame
@@ -40,5 +33,30 @@ void AWeapon::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+}
+
+bool AWeapon::PullTrigger()
+{
+	if (CurrentAmmunition > 0)
+	{
+		Fire();
+		return true;
+	}
+	else return false;
+}
+
+void AWeapon::Fire()
+{
+	UGameplayStatics::SpawnEmitterAttached(MuzzleFlash, MeshComp, TEXT("MuzzleFlashSocket"));
+	UE_LOG(LogTemp, Warning, TEXT("Fire Weapon"));
+	if (GEngine)
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Ammo: %d"), --CurrentAmmunition));
+}
+
+void AWeapon::Reload()
+{
+	CurrentAmmunition = MagazinSize;
+	if (GEngine)
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Reloading"));
 }
 
