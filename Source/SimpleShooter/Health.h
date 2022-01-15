@@ -16,6 +16,9 @@ public:
 	// Sets default values for this component's properties
 	UHealth();
 
+	UFUNCTION(BlueprintPure)
+	bool IsDead() const { return CurrentHealth <= 0; }
+
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
