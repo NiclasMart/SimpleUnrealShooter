@@ -5,6 +5,7 @@
 
 #include "GameFramework/PlayerController.h"
 #include "Kismet/GameplayStatics.h"
+#include "Health.h"
 #include "Weapon.h"
 
 // Sets default values
@@ -12,6 +13,8 @@ AShooterCharacter::AShooterCharacter()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+
+	HealthComp = CreateDefaultSubobject<UHealth>(TEXT("Health"));
 }
 
 // Called when the game starts or when spawned
@@ -23,6 +26,8 @@ void AShooterCharacter::BeginPlay()
 	Weapon = GetWorld()->SpawnActor<AWeapon>(WeaponBlueprint);	//spawns actor into the world
 	Weapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, TEXT("WeaponSocket")); //attaches weapon to socket on the mesh
 	Weapon->SetOwner(this); //set owner of the weapon
+
+	
 
 	PlayerController = GetWorld()->GetFirstPlayerController();
 }

@@ -34,11 +34,17 @@ private:
 		USceneComponent* Root;
 	UPROPERTY(VisibleAnywhere)
 		class USkeletalMeshComponent* MeshComp;
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category="VFX-Effects")
 		class UParticleSystem* MuzzleFlash;
+	UPROPERTY(EditAnywhere, Category ="VFX-Effects")
+		class UParticleSystem* ImpactParticles;
 
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, Category="Stats")
 		int32 MagazinSize = 10;
+	UPROPERTY(EditDefaultsOnly, Category = "Stats")
+		float Damage = 20;
+	UPROPERTY(EditDefaultsOnly, Category = "Stats")
+		int32 Range = 2000;
 
 	int32 CurrentAmmunition;
 

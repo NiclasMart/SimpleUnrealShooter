@@ -40,6 +40,8 @@ private:
 	UPROPERTY()
 		AWeapon* Weapon;
 	UPROPERTY()
+		class UHealth* HealthComp;
+	UPROPERTY()
 		class APlayerController* PlayerController;
 
 	void MoveForward(float Value);

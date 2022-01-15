@@ -44,8 +44,15 @@ bool AWeapon::PullTrigger(FVector AimLocation,  FVector AimDirection)
 
 	DrawDebugLine(GetWorld(), AimLocation, AimLocation + AimDirection * 1000.f, FColor::Red, false, 3.f);
 	FHitResult Hit;
-	bool bHit = GetWorld()->LineTraceSingleByChannel(Hit, AimLocation, AimLocation + AimDirection * 1000.f, ECollisionChannel::ECC_GameTraceChannel1);
-	if (bHit) DrawDebugPoint(GetWorld(), Hit.Location, 20, FColor::Red, true);		
+	bool bHit = GetWorld()->LineTraceSingleByChannel(Hit, AimLocation, AimLocation + AimDirection * Range, ECollisionChannel::ECC_GameTraceChannel1);
+	if (bHit)
+	{
+		DrawDebugPoint(GetWorld(), Hit.Location, 20, FColor::Red, true);
+		UGameplayStatics::SpawnEmitterAtLocation(this, ImpactParticles, Hit.Location, Hit.ImpactNormal.Rotation());
+
+		if (Hit.GetActor())
+			UGameplayStatics::ApplyDamage(Hit.GetActor(), Damage, GetOwner()->GetInstigatorController(), this, UDamageType::StaticClass());			
+	}
 	
 	return true;
 	
