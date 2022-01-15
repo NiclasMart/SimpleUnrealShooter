@@ -11,13 +11,11 @@
 // Sets default values
 AShooterCharacter::AShooterCharacter()
 {
- 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	HealthComp = CreateDefaultSubobject<UHealth>(TEXT("Health"));
 }
 
-// Called when the game starts or when spawned
 void AShooterCharacter::BeginPlay()
 {
 	Super::BeginPlay();
@@ -27,12 +25,9 @@ void AShooterCharacter::BeginPlay()
 	Weapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, TEXT("WeaponSocket")); //attaches weapon to socket on the mesh
 	Weapon->SetOwner(this); //set owner of the weapon
 
-	
-
 	PlayerController = GetWorld()->GetFirstPlayerController();
 }
 
-// Called every frame
 void AShooterCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
@@ -46,6 +41,7 @@ void AShooterCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 	PlayerInputComponent->BindAction(TEXT("Jump"), IE_Pressed, this, &ACharacter::Jump);
+
 	PlayerInputComponent->BindAction(TEXT("Shoot"), IE_Pressed, this, &AShooterCharacter::StartFireWeapon);
 	PlayerInputComponent->BindAction(TEXT("Shoot"), IE_Released, this, &AShooterCharacter::StopFireWeapon);
 
@@ -107,6 +103,7 @@ void AShooterCharacter::FireWeapon()
 	FVector Location;
 	FRotator Rotation;
 	PlayerController->GetPlayerViewPoint(Location, Rotation);
+
 	bool MunitionWasEmpty = !Weapon->PullTrigger(Location, Rotation.Vector());
 	if (MunitionWasEmpty) Weapon->Reload();
 }

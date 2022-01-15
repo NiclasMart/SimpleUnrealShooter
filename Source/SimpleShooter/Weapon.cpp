@@ -7,19 +7,15 @@
 #include "Components/SkeletalMeshComponent.h"
 #include "Kismet/GameplayStatics.h"
 
-// Sets default values
 AWeapon::AWeapon()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 		
 	Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
 	SetRootComponent(Root);
 
 	MeshComp = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Weapon Mesh"));
 	MeshComp->SetupAttachment(Root);
-	
-
 }
 
 void AWeapon::BeginPlay()
@@ -29,36 +25,34 @@ void AWeapon::BeginPlay()
 	CurrentAmmunition = MagazinSize;
 }
 
-// Called every frame
 void AWeapon::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
 bool AWeapon::PullTrigger(FVector AimLocation,  FVector AimDirection)
 {
 	if (CurrentAmmunition <= 0) return false;
-
 	if (LastShotFired + 1.f / AutoFrequency > GetWorld()->GetTimeSeconds()) return true;
 	
 	Fire();
 
-	DrawDebugLine(GetWorld(), AimLocation, AimLocation + AimDirection * 1000.f, FColor::Red, false, 3.f);
 	FHitResult Hit;
-	bool bHit = GetWorld()->LineTraceSingleByChannel(Hit, AimLocation, AimLocation + AimDirection * Range, ECollisionChannel::ECC_GameTraceChannel1);
-	if (bHit)
-	{
-		DrawDebugPoint(GetWorld(), Hit.Location, 20, FColor::Red, true);
-		UGameplayStatics::SpawnEmitterAtLocation(this, ImpactParticles, Hit.Location, Hit.ImpactNormal.Rotation());
+	/* DEBUG */ DrawDebugLine(GetWorld(), AimLocation, AimLocation + AimDirection * 1000.f, FColor::Red, false, 3.f);
+	bool bHitSomething =  GetWorld()->LineTraceSingleByChannel(Hit, AimLocation, AimLocation + AimDirection * Range, ECollisionChannel::ECC_GameTraceChannel1);
+	if (bHitSomething) HandleImpact(Hit);
 
-		if (Hit.GetActor())
-			UGameplayStatics::ApplyDamage(Hit.GetActor(), Damage, GetOwner()->GetInstigatorController(), this, UDamageType::StaticClass());			
-	}
-	
 	LastShotFired = GetWorld()->GetTimeSeconds();
 	return true;
-	
+}
+
+void AWeapon::HandleImpact(const FHitResult& Hit)
+{	
+	/* DEBUG */ DrawDebugPoint(GetWorld(), Hit.Location, 20, FColor::Red, true);
+	UGameplayStatics::SpawnEmitterAtLocation(this, ImpactParticles, Hit.Location, Hit.ImpactNormal.Rotation());
+
+	if (Hit.GetActor())
+		UGameplayStatics::ApplyDamage(Hit.GetActor(), Damage, GetOwner()->GetInstigatorController(), this, UDamageType::StaticClass());
 }
 
 void AWeapon::Fire()

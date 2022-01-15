@@ -16,6 +16,9 @@ public:
 	AWeapon();
 
 	bool PullTrigger(FVector AimLocation, FVector AimDirection);
+
+	
+
 	void Reload();
 
 protected:
@@ -50,5 +53,7 @@ private:
 
 	int32 CurrentAmmunition;
 	float LastShotFired;
+
+	void HandleImpact(const FHitResult& Hit);
 
 };
