@@ -44,6 +44,8 @@ private:
 	UPROPERTY()
 		class APlayerController* PlayerController;
 
+	bool bHoldingWeaponTrigger = false;
+
 	void MoveForward(float Value);
 	void MoveSideways(float Value);
 	void LookUp(float Value);
@@ -51,5 +53,7 @@ private:
 	void LookUpRate(float Value);
 	void TurnRate(float Value);
 
+	void StartFireWeapon();
+	void StopFireWeapon();
 	void FireWeapon();
 };

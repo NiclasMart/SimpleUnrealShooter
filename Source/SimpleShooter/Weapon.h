@@ -40,12 +40,15 @@ private:
 		class UParticleSystem* ImpactParticles;
 
 	UPROPERTY(EditDefaultsOnly, Category="Stats")
-		int32 MagazinSize = 10;
+		int32 MagazinSize = 25;
+	UPROPERTY(EditDefaultsOnly, Category = "Stats")
+		float AutoFrequency = 2.3f;
 	UPROPERTY(EditDefaultsOnly, Category = "Stats")
 		float Damage = 20;
 	UPROPERTY(EditDefaultsOnly, Category = "Stats")
 		int32 Range = 2000;
 
 	int32 CurrentAmmunition;
+	float LastShotFired;
 
 };

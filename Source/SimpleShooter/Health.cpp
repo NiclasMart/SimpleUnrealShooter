@@ -17,7 +17,7 @@ void UHealth::BeginPlay()
 {
 	Super::BeginPlay();
 
-	CurrentLifePoints = StartingLife;
+	CurrentHealth = StartingLife;
 	GetOwner()->OnTakeAnyDamage.AddDynamic(this, &UHealth::ApplyDamage);
 }
 
@@ -28,6 +28,7 @@ void UHealth::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponen
 
 void UHealth::ApplyDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, class AController* Instigator, AActor* DamageCauser)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Take %f Damage"), Damage);
+	CurrentHealth = FMath::Max(CurrentHealth - Damage, 0.f);
+	UE_LOG(LogTemp, Warning, TEXT("Take %f Damage, Remaining Health: %d"), Damage, CurrentHealth);
 }
 

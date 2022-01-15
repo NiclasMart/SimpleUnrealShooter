@@ -39,6 +39,8 @@ void AWeapon::Tick(float DeltaTime)
 bool AWeapon::PullTrigger(FVector AimLocation,  FVector AimDirection)
 {
 	if (CurrentAmmunition <= 0) return false;
+
+	if (LastShotFired + 1.f / AutoFrequency > GetWorld()->GetTimeSeconds()) return true;
 	
 	Fire();
 
@@ -54,6 +56,7 @@ bool AWeapon::PullTrigger(FVector AimLocation,  FVector AimDirection)
 			UGameplayStatics::ApplyDamage(Hit.GetActor(), Damage, GetOwner()->GetInstigatorController(), this, UDamageType::StaticClass());			
 	}
 	
+	LastShotFired = GetWorld()->GetTimeSeconds();
 	return true;
 	
 }

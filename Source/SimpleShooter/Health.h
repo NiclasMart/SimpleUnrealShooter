@@ -28,7 +28,7 @@ private:
 	UPROPERTY(EditDefaultsOnly)
 		int32 StartingLife = 100.f;
 
-	int32 CurrentLifePoints;
+	int32 CurrentHealth;
 
 	UFUNCTION()
 		void ApplyDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, class AController* Instigator, AActor* DamageCauser);

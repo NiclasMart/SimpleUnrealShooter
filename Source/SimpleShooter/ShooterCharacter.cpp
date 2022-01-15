@@ -37,6 +37,7 @@ void AShooterCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (bHoldingWeaponTrigger) FireWeapon();
 }
 
 // Called to bind functionality to input
@@ -45,7 +46,8 @@ void AShooterCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 	PlayerInputComponent->BindAction(TEXT("Jump"), IE_Pressed, this, &ACharacter::Jump);
-	PlayerInputComponent->BindAction(TEXT("Shoot"), IE_Pressed, this, &AShooterCharacter::FireWeapon);
+	PlayerInputComponent->BindAction(TEXT("Shoot"), IE_Pressed, this, &AShooterCharacter::StartFireWeapon);
+	PlayerInputComponent->BindAction(TEXT("Shoot"), IE_Released, this, &AShooterCharacter::StopFireWeapon);
 
 	PlayerInputComponent->BindAxis(TEXT("MoveForward"), this, &AShooterCharacter::MoveForward);
 	PlayerInputComponent->BindAxis(TEXT("MoveSideways"), this, &AShooterCharacter::MoveSideways);
@@ -88,17 +90,24 @@ void AShooterCharacter::TurnRate(float Value)
 	AddControllerYawInput(Value * LookAroundSpeedController * UGameplayStatics::GetWorldDeltaSeconds(this));
 }
 
+void AShooterCharacter::StartFireWeapon()
+{
+	bHoldingWeaponTrigger = true;
+}
+
+void AShooterCharacter::StopFireWeapon()
+{
+	bHoldingWeaponTrigger = false;
+}
+
 void AShooterCharacter::FireWeapon()
 {
 	if (!PlayerController) return;
-	
+
 	FVector Location;
 	FRotator Rotation;
 	PlayerController->GetPlayerViewPoint(Location, Rotation);
-	/*FVector Direction = ;*/
 	bool MunitionWasEmpty = !Weapon->PullTrigger(Location, Rotation.Vector());
 	if (MunitionWasEmpty) Weapon->Reload();
 }
-
-
 
