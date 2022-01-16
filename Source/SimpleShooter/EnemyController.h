@@ -17,16 +17,19 @@ class SIMPLESHOOTER_API AEnemyController : public AAIController
 public:
 	virtual void Tick(float DeltaTime) override;
 
-	void StopChasingTarget();
-
 protected:
 	virtual void BeginPlay() override;
 
+	void InitializeAIBehavior();
+
 private:
+	UPROPERTY(EditAnywhere)
+		class UBehaviorTree* AIBehavior;
 	UPROPERTY(EditAnywhere)
 		float AcceptanceRadius = 200.f;
 
+	UPROPERTY()
+		class UBlackboardComponent* BBComponent;
 	AActor* Target;
 
-	void ChaseTarget();
 };
