@@ -15,6 +15,10 @@ public:
 	// Sets default values for this character's properties
 	AShooterCharacter();
 
+	void StartFireWeapon();
+	void StopFireWeapon();
+	void FireWeapon();
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -53,7 +57,5 @@ private:
 	void LookUpRate(float Value);
 	void TurnRate(float Value);
 
-	void StartFireWeapon();
-	void StopFireWeapon();
-	void FireWeapon();
+	
 };
