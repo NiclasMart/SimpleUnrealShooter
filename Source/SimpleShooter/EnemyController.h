@@ -30,6 +30,6 @@ private:
 
 	UPROPERTY()
 		class UBlackboardComponent* BBComponent;
-	AActor* Target;
+	class AShooterCharacter* Target;
 
 };

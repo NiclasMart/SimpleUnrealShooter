@@ -6,12 +6,13 @@
 #include "Kismet/GameplayStatics.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "BehaviorTree/BehaviorTree.h"
+#include "ShooterCharacter.h"
 
 void AEnemyController::BeginPlay()
 {
 	Super::BeginPlay();
 
-	Target = UGameplayStatics::GetPlayerPawn(this, 0);
+	Target = Cast<AShooterCharacter>(UGameplayStatics::GetPlayerPawn(this, 0));
 	InitializeAIBehavior();
 }
 
@@ -19,7 +20,7 @@ void AEnemyController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (LineOfSightTo(Target))
+	if (LineOfSightTo(Target) && !Target->IsDead())
 	{
 		BBComponent->SetValueAsVector(TEXT("PlayerLocation"), Target->GetActorLocation());
 		BBComponent->SetValueAsVector(TEXT("PlayerLastLocation"), Target->GetActorLocation());

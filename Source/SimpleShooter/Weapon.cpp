@@ -38,8 +38,16 @@ bool AWeapon::PullTrigger(FVector AimLocation,  FVector AimDirection)
 	Fire();
 
 	FHitResult Hit;
+	FCollisionQueryParams Params;
+	Params.AddIgnoredActors(TArray<AActor*>{ this, GetOwner()});
 	/* DEBUG */ DrawDebugLine(GetWorld(), AimLocation, AimLocation + AimDirection * 1000.f, FColor::Red, false, 3.f);
-	bool bHitSomething =  GetWorld()->LineTraceSingleByChannel(Hit, AimLocation, AimLocation + AimDirection * Range, ECollisionChannel::ECC_GameTraceChannel1);
+	bool bHitSomething =  GetWorld()->LineTraceSingleByChannel(
+		Hit, 
+		AimLocation, 
+		AimLocation + AimDirection * Range, 
+		ECollisionChannel::ECC_GameTraceChannel1,
+		Params
+	);
 	if (bHitSomething) HandleImpact(Hit);
 
 	LastShotFired = GetWorld()->GetTimeSeconds();

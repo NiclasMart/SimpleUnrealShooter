@@ -5,6 +5,7 @@
 
 #include "GameFramework/PlayerController.h"
 #include "Kismet/GameplayStatics.h"
+#include "GameFramework/Actor.h"
 #include "Health.h"
 #include "Weapon.h"
 
@@ -25,7 +26,8 @@ void AShooterCharacter::BeginPlay()
 	Weapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, TEXT("WeaponSocket")); //attaches weapon to socket on the mesh
 	Weapon->SetOwner(this); //set owner of the weapon
 
-	PlayerController = GetWorld()->GetFirstPlayerController();
+	CharacterController = GetController();
+	HealthComp = Cast<UHealth>(GetComponentByClass(UHealth::StaticClass()));
 }
 
 void AShooterCharacter::Tick(float DeltaTime)
@@ -86,6 +88,18 @@ void AShooterCharacter::TurnRate(float Value)
 	AddControllerYawInput(Value * LookAroundSpeedController * UGameplayStatics::GetWorldDeltaSeconds(this));
 }
 
+void AShooterCharacter::HandleDeath()
+{
+	SetActorEnableCollision(false);
+	DetachFromControllerPendingDestroy();
+}
+
+bool AShooterCharacter::IsDead() const
+{
+	if (HealthComp) return HealthComp->IsDead();
+	else return true;
+}
+
 void AShooterCharacter::StartFireWeapon()
 {
 	bHoldingWeaponTrigger = true;
@@ -98,11 +112,11 @@ void AShooterCharacter::StopFireWeapon()
 
 void AShooterCharacter::FireWeapon()
 {
-	if (!PlayerController) return;
+	if (!CharacterController) return;
 
 	FVector Location;
 	FRotator Rotation;
-	PlayerController->GetPlayerViewPoint(Location, Rotation);
+	CharacterController->GetPlayerViewPoint(Location, Rotation);
 
 	bool MunitionWasEmpty = !Weapon->PullTrigger(Location, Rotation.Vector());
 	if (MunitionWasEmpty) Weapon->Reload();

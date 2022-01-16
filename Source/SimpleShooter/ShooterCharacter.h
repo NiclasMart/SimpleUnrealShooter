@@ -18,6 +18,9 @@ public:
 	void StartFireWeapon();
 	void StopFireWeapon();
 	void FireWeapon();
+	void HandleDeath();
+
+	bool IsDead() const; 
 
 protected:
 	// Called when the game starts or when spawned
@@ -46,7 +49,7 @@ private:
 	UPROPERTY()
 		class UHealth* HealthComp;
 	UPROPERTY()
-		class APlayerController* PlayerController;
+		class AController* CharacterController;
 
 	bool bHoldingWeaponTrigger = false;
 
