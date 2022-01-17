@@ -3,6 +3,7 @@
 
 #include "ShooterCharacter.h"
 
+#include "SimpleShooterGameModeBase.h"
 #include "GameFramework/PlayerController.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/Actor.h"
@@ -90,6 +91,12 @@ void AShooterCharacter::TurnRate(float Value)
 
 void AShooterCharacter::HandleDeath()
 {
+	ASimpleShooterGameModeBase* CurrentGameMode = GetWorld()->GetAuthGameMode<ASimpleShooterGameModeBase>();
+	if (CurrentGameMode != nullptr)
+	{
+		CurrentGameMode->ActorDied(this);
+	}
+
 	SetActorEnableCollision(false);
 	DetachFromControllerPendingDestroy();
 }

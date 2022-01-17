@@ -13,5 +13,16 @@ UCLASS()
 class SIMPLESHOOTER_API ASimpleShooterGameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
+
+protected:
+	virtual void BeginPlay() override;
+
+public:
+	void ActorDied(APawn* Actor);
+
+	void HandleGameEnd(APawn* Actor, bool bGameOver);
+
+	class AShooterCharacter* Player;
+	int32 EnemyCount;
 	
 };
