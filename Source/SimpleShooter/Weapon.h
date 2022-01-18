@@ -25,7 +25,7 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	void Fire();
+	void PlayFireEffects();
 	
 
 public:	
@@ -37,10 +37,14 @@ private:
 		USceneComponent* Root;
 	UPROPERTY(VisibleAnywhere)
 		class USkeletalMeshComponent* MeshComp;
-	UPROPERTY(EditAnywhere, Category="VFX-Effects")
+	UPROPERTY(EditAnywhere, Category="Effects")
 		class UParticleSystem* MuzzleFlash;
-	UPROPERTY(EditAnywhere, Category ="VFX-Effects")
-		class UParticleSystem* ImpactParticles;
+	UPROPERTY(EditAnywhere, Category ="Effects")
+		UParticleSystem* ImpactParticles;
+	UPROPERTY(EditAnywhere, Category = "Effects")
+		class USoundBase* MuzzleSound;
+	UPROPERTY(EditAnywhere, Category = "Effects")
+		USoundBase* ImpactSound;
 
 	UPROPERTY(EditDefaultsOnly, Category="Stats")
 		int32 MagazinSize = 25;

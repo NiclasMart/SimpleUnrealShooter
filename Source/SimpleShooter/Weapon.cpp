@@ -35,7 +35,7 @@ bool AWeapon::PullTrigger(FVector AimLocation,  FVector AimDirection)
 	if (CurrentAmmunition <= 0) return false;
 	if (LastShotFired + 1.f / AutoFrequency > GetWorld()->GetTimeSeconds()) return true;
 	
-	Fire();
+	PlayFireEffects();
 
 	FHitResult Hit;
 	FCollisionQueryParams Params;
@@ -58,14 +58,16 @@ void AWeapon::HandleImpact(const FHitResult& Hit)
 {	
 	//DrawDebugPoint(GetWorld(), Hit.Location, 20, FColor::Red, true);
 	UGameplayStatics::SpawnEmitterAtLocation(this, ImpactParticles, Hit.Location, Hit.ImpactNormal.Rotation());
+	UGameplayStatics::SpawnSoundAtLocation(this, ImpactSound, Hit.Location);
 
 	if (Hit.GetActor())
 		UGameplayStatics::ApplyDamage(Hit.GetActor(), Damage, GetOwner()->GetInstigatorController(), this, UDamageType::StaticClass());
 }
 
-void AWeapon::Fire()
+void AWeapon::PlayFireEffects()
 {
 	UGameplayStatics::SpawnEmitterAttached(MuzzleFlash, MeshComp, TEXT("MuzzleFlashSocket"));
+	UGameplayStatics::SpawnSoundAttached(MuzzleSound, MeshComp, TEXT("MuzzleFlashSocket"));
 	UE_LOG(LogTemp, Warning, TEXT("Fire Weapon"));
 	if (GEngine)
 		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Ammo: %d"), --CurrentAmmunition));
