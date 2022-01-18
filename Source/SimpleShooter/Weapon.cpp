@@ -40,7 +40,7 @@ bool AWeapon::PullTrigger(FVector AimLocation,  FVector AimDirection)
 	FHitResult Hit;
 	FCollisionQueryParams Params;
 	Params.AddIgnoredActors(TArray<AActor*>{ this, GetOwner()});
-	/* DEBUG */ DrawDebugLine(GetWorld(), AimLocation, AimLocation + AimDirection * 1000.f, FColor::Red, false, 3.f);
+	/*DrawDebugLine(GetWorld(), AimLocation, AimLocation + AimDirection * 1000.f, FColor::Red, false, 3.f);*/
 	bool bHitSomething =  GetWorld()->LineTraceSingleByChannel(
 		Hit, 
 		AimLocation, 
@@ -56,7 +56,7 @@ bool AWeapon::PullTrigger(FVector AimLocation,  FVector AimDirection)
 
 void AWeapon::HandleImpact(const FHitResult& Hit)
 {	
-	/* DEBUG */ DrawDebugPoint(GetWorld(), Hit.Location, 20, FColor::Red, true);
+	//DrawDebugPoint(GetWorld(), Hit.Location, 20, FColor::Red, true);
 	UGameplayStatics::SpawnEmitterAtLocation(this, ImpactParticles, Hit.Location, Hit.ImpactNormal.Rotation());
 
 	if (Hit.GetActor())

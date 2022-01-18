@@ -20,7 +20,7 @@ protected:
 public:
 	void ActorDied(APawn* Actor);
 
-	void HandleGameEnd(APawn* Actor, bool bGameOver);
+	void HandleGameEnd(bool bGameOver);
 
 	class AShooterCharacter* Player;
 	int32 EnemyCount;

@@ -21,7 +21,7 @@ void ASimpleShooterGameModeBase::ActorDied(APawn* Actor)
 {
 	if (Actor == Player)
 	{
-		HandleGameEnd(Actor, true);
+		HandleGameEnd(true);
 	}
 	else
 	{
@@ -30,14 +30,14 @@ void ASimpleShooterGameModeBase::ActorDied(APawn* Actor)
 		UE_LOG(LogTemp, Error, TEXT("Remaining Enemies %d"), EnemyCount);
 		if (EnemyCount == 0)
 		{
-			HandleGameEnd(Actor, false);
+			HandleGameEnd(false);
 			UE_LOG(LogTemp, Error, TEXT("Player won"));
 		}
 	}
 }
 
-void ASimpleShooterGameModeBase::HandleGameEnd(APawn* Actor, bool bGameOver)
+void ASimpleShooterGameModeBase::HandleGameEnd(bool bGameOver)
 {
-	APlayerController* PlayerController = Cast<APlayerController>(Actor->GetController());
-	if (PlayerController) PlayerController->GameHasEnded(nullptr, bGameOver);
+	APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
+	if (PlayerController) PlayerController->GameHasEnded(PlayerController->GetPawn(), !bGameOver);
 }

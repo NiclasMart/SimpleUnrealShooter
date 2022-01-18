@@ -4,27 +4,47 @@
 #include "ShooterPlayerController.h"
 
 #include "Blueprint/UserWidget.h"
+#include "ShooterCharacter.h"
+#include "GameOverScreenWidget.h"
 
 void AShooterPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 
-	UUserWidget* HUD = CreateWidget(this, HUDClass);
-	if (HUD)
-	{
-		HUD->AddToViewport();
-	}
+	SetInputMode(FInputModeGameOnly());
+
+	HUD = CreateWidget(this, HUDClass);
+	if (HUD) HUD->AddToViewport();
 }
 
 void AShooterPlayerController::GameHasEnded(class AActor* EndGameFocus, bool bIsWinner)
 {
 	Super::GameHasEnded(EndGameFocus, bIsWinner);
 
-	UUserWidget* LoseScreen = CreateWidget(this, LoseScreenClass);
-	if (LoseScreen)
+	AShooterCharacter* PlayerChar = Cast<AShooterCharacter>(GetPawn());
+	if (PlayerChar)
 	{
-		bShowMouseCursor = true;
-		SetInputMode(FInputModeUIOnly());
-		LoseScreen->AddToViewport();
+		PlayerChar->DisableInput(this);
+		PlayerChar->StopFireWeapon();
 	}
+
+	ShowEndscreen(bIsWinner);
+
+}
+
+void AShooterPlayerController::ShowEndscreen(bool bIsWinner)
+{
+	HUD->RemoveFromViewport();
+
+	UGameOverScreenWidget* LoseScreen = Cast<UGameOverScreenWidget>(CreateWidget(this, LoseScreenClass));
+	if (!LoseScreen) return;
+
+	FText DisplayText = bIsWinner ? FText::FromString(TEXT("You have Won!")) : FText::FromString(TEXT("Game Over!"));
+	LoseScreen->SetDisplayText(DisplayText);
+	bShowMouseCursor = true;
+	SetInputMode(FInputModeUIOnly());
+	LoseScreen->AddToViewport();
+	
+
+	
 }

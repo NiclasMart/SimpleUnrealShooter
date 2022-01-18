@@ -18,9 +18,13 @@ public:
 	virtual void BeginPlay() override;
 	virtual void GameHasEnded(class AActor* EndGameFocus = nullptr, bool bIsWinner = false) override;
 
+	void ShowEndscreen(bool bIsWinner);
+
 private:
 	UPROPERTY(EditAnywhere)
 		TSubclassOf<class UUserWidget> HUDClass;
 	UPROPERTY(EditAnywhere)
 		TSubclassOf<class UUserWidget> LoseScreenClass;
+
+	UUserWidget* HUD;
 };
