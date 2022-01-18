@@ -18,6 +18,9 @@ public:
 	UFUNCTION(BlueprintPure)
 	bool IsDead() const { return CurrentHealth <= 0; }
 
+	DECLARE_MULTICAST_DELEGATE_OneParam(FUpdateEvent, float Value);
+	FUpdateEvent OnValueChanged;
+	
 protected:
 	virtual void BeginPlay() override;
 
@@ -29,6 +32,7 @@ private:
 		int32 StartingLife = 100.f;
 
 	int32 CurrentHealth;
+	
 
 	UFUNCTION()
 		void ApplyDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, class AController* Instigator, AActor* DamageCauser);

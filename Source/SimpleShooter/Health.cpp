@@ -3,6 +3,7 @@
 
 #include "Health.h"
 #include "ShooterCharacter.h"
+#include "PlayerHUDWidget.h"
 
 UHealth::UHealth()
 {
@@ -25,6 +26,9 @@ void UHealth::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponen
 void UHealth::ApplyDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, class AController* Instigator, AActor* DamageCauser)
 {
 	CurrentHealth = FMath::Max(CurrentHealth - Damage, 0.f);
+
+	OnValueChanged.Broadcast(CurrentHealth / static_cast<float>(StartingLife));
+
 	if (IsDead())
 	{
 		AShooterCharacter* Character = Cast<AShooterCharacter>(GetOwner());

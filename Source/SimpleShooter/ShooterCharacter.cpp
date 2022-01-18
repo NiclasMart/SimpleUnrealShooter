@@ -15,7 +15,7 @@ AShooterCharacter::AShooterCharacter()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
-	HealthComp = CreateDefaultSubobject<UHealth>(TEXT("Health"));
+	HealthComponent = CreateDefaultSubobject<UHealth>(TEXT("Health"));
 }
 
 void AShooterCharacter::BeginPlay()
@@ -28,7 +28,7 @@ void AShooterCharacter::BeginPlay()
 	Weapon->SetOwner(this); //set owner of the weapon
 
 	CharacterController = GetController();
-	HealthComp = Cast<UHealth>(GetComponentByClass(UHealth::StaticClass()));
+	HealthComponent = Cast<UHealth>(GetComponentByClass(UHealth::StaticClass()));
 }
 
 void AShooterCharacter::Tick(float DeltaTime)
@@ -103,7 +103,7 @@ void AShooterCharacter::HandleDeath()
 
 bool AShooterCharacter::IsDead() const
 {
-	if (HealthComp) return HealthComp->IsDead();
+	if (HealthComponent) return HealthComponent->IsDead();
 	else return true;
 }
 

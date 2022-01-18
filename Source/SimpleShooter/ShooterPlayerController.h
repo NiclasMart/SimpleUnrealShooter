@@ -26,5 +26,6 @@ private:
 	UPROPERTY(EditAnywhere)
 		TSubclassOf<class UUserWidget> LoseScreenClass;
 
-	UUserWidget* HUD;
+	UPROPERTY()
+		UUserWidget* HUD;
 };

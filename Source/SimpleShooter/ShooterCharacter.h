@@ -46,8 +46,8 @@ private:
 
 	UPROPERTY()
 		AWeapon* Weapon;
-	UPROPERTY()
-		class UHealth* HealthComp;
+	UPROPERTY(EditAnywhere)
+		class UHealth* HealthComponent;
 	UPROPERTY()
 		class AController* CharacterController;
 
