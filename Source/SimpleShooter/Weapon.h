@@ -15,12 +15,14 @@ public:
 	// Sets default values for this actor's properties
 	AWeapon();
 
-	bool PullTrigger(FVector AimLocation, FVector AimDirection);
+	bool PullTrigger(FVector AimLocation, FVector AimDirection, bool bIsMiss = false);
 	void Reload();
 	void SetAsActiveWeapon();
 	void SetInactive();
 
 	float GetReloadTime() const { return ReloadTime; };
+	int32 GetCurrentAmmo() const { return CurrentAmmunition; };
+	int32 GetTotalAmmo() const { return MagazinSize; };
 
 protected:
 	// Called when the game starts or when spawned

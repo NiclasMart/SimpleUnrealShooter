@@ -71,21 +71,20 @@ void AShooterCharacter::SwitchWeapon(float Value)
 {
 	if (Value == 0) return;
 
-	Weapons[ActiveWeaponIndex]->SetInactive();
-
+	int32 NextWeaponIndex = ActiveWeaponIndex;
 	if (Value > 0)
 	{
-		++ActiveWeaponIndex;
-		if (ActiveWeaponIndex > Weapons.Num() - 1) ActiveWeaponIndex = 0;
+		++NextWeaponIndex;
+		if (NextWeaponIndex > Weapons.Num() - 1) NextWeaponIndex = 0;
 
 	}
 	else if (Value < 0)
 	{
-		--ActiveWeaponIndex;
-		if (ActiveWeaponIndex < 0) ActiveWeaponIndex = Weapons.Num() - 1;
+		--NextWeaponIndex;
+		if (NextWeaponIndex < 0) NextWeaponIndex = Weapons.Num() - 1;
 	}
 
-	Weapons[ActiveWeaponIndex]->SetAsActiveWeapon();
+	SwitchWeaponTo(NextWeaponIndex);
 }
 
 void AShooterCharacter::SwitchWeaponTo(int32 Index)
@@ -96,28 +95,32 @@ void AShooterCharacter::SwitchWeaponTo(int32 Index)
 	Weapons[ActiveWeaponIndex]->SetInactive();
 	ActiveWeaponIndex = Index;
 	Weapons[ActiveWeaponIndex]->SetAsActiveWeapon();
+
+	UpdateAmmunitionUI();
 }
 
 void AShooterCharacter::Reloading()
 {
 	if (bIsReloadingWeapon) return;
 
-	UE_LOG(LogTemp, Warning, TEXT("Reloading: %f"), Weapons[ActiveWeaponIndex]->GetReloadTime());
 	FTimerHandle ReloadingTimer = FTimerHandle();
 	GetWorldTimerManager().SetTimer(
 		ReloadingTimer,
 		this, 
-		&AShooterCharacter::ResetReloadingTimer,
+		&AShooterCharacter::FinishedReloading,
 		Weapons[ActiveWeaponIndex]->GetReloadTime()
 	);
-	Weapons[ActiveWeaponIndex]->Reload();
+	
 	bIsReloadingWeapon = true;
 }
 
-void AShooterCharacter::ResetReloadingTimer()
+void AShooterCharacter::FinishedReloading()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Reset Reloading"));
 	bIsReloadingWeapon = false;
+
+	Weapons[ActiveWeaponIndex]->Reload();
+	UpdateAmmunitionUI();
 }
 
 
@@ -157,12 +160,23 @@ void AShooterCharacter::FireWeapon()
 	FRotator Rotation;
 	CharacterController->GetPlayerViewPoint(Location, Rotation);
 
-	bool MunitionWasEmpty = !Weapons[ActiveWeaponIndex]->PullTrigger(Location, Rotation.Vector());
+	bool bShotMiss = FMath::RandRange(0.f, 1.f) < ShotMissProbability;
+	bool MunitionWasEmpty = !Weapons[ActiveWeaponIndex]->PullTrigger(Location, Rotation.Vector(), bShotMiss);
 	if (MunitionWasEmpty) Reloading();
+
+	UpdateAmmunitionUI();
+}
+
+void AShooterCharacter::UpdateAmmunitionUI()
+{
+	int32 CurrentAmmo = Weapons[ActiveWeaponIndex]->GetCurrentAmmo();
+	int32 MagSize = Weapons[ActiveWeaponIndex]->GetTotalAmmo();
+	OnMunitionChanged.Broadcast(CurrentAmmo, MagSize);
 }
 
 void AShooterCharacter::SpawnWeapons()
 {
+	UE_LOG(LogTemp, Warning, TEXT("Initialize Weapons %s"), *GetName());
 	ActiveWeaponIndex = 0;
 	GetMesh()->HideBoneByName(TEXT("weapon_r"), EPhysBodyOp::PBO_None);	//hide existing bone with weapon (mesh specific)
 
@@ -176,5 +190,7 @@ void AShooterCharacter::SpawnWeapons()
 	}
 
 	Weapons[ActiveWeaponIndex]->SetAsActiveWeapon();
+
+	UpdateAmmunitionUI();
 }
 

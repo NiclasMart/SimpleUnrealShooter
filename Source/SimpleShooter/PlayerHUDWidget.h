@@ -19,9 +19,15 @@ public:
 
 	UFUNCTION()
 		void UpdateLifeDisplay(float Value);
+	UFUNCTION()
+		void UpdateAmmoDisplay(int32 Current, int32 Total);
 
 protected:
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 		class UProgressBar* LifeBar;
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+		class UTextBlock* TotalAmmo;
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+		class UTextBlock* CurrentAmmo;
 	
 };

@@ -15,6 +15,8 @@ class SIMPLESHOOTER_API AShooterCharacter : public ACharacter
 
 	DECLARE_DELEGATE_OneParam(FActionDelegateInt, int32);
 	DECLARE_DELEGATE_OneParam(FActionDelegateBool, bool);
+	DECLARE_MULTICAST_DELEGATE_TwoParams(FUIUpdateEvent, int32 Current, int32 Total);
+	
 
 public:
 	// Sets default values for this character's properties
@@ -23,9 +25,15 @@ public:
 	void StartFireWeapon();
 	void StopFireWeapon();
 	void FireWeapon();
+
+	void UpdateAmmunitionUI();
+
 	void HandleDeath();
 
 	bool IsDead() const; 
+	TArray<class AWeapon*> GetWeapons() const { return Weapons; };
+
+	FUIUpdateEvent OnMunitionChanged;
 
 protected:
 	// Called when the game starts or when spawned
@@ -42,8 +50,10 @@ private:
 	
 	UPROPERTY(EditAnywhere)
 		float ZoomDistance = 100.f;
+	UPROPERTY(EditAnywhere)
+		float ShotMissProbability = 0.f;
 	UPROPERTY(EditDefaultsOnly)
-		TArray<TSubclassOf<class AWeapon>> WeaponBlueprints;
+		TArray<TSubclassOf<AWeapon>> WeaponBlueprints;
 	UPROPERTY()
 		TArray<AWeapon*> Weapons;
 	UPROPERTY()
@@ -64,7 +74,7 @@ private:
 	float BaseAimLevel = 0;
 
 	UFUNCTION()
-		void ResetReloadingTimer();
+		void FinishedReloading();
 	void SetAimCamera(bool bZoomActive);
 	void SwitchWeapon(float Value);
 	void SwitchWeaponTo(int32 Index);
