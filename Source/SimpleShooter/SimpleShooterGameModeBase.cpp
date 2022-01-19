@@ -11,6 +11,8 @@ void ASimpleShooterGameModeBase::BeginPlay()
 	Super::BeginPlay();
 
 	Player = Cast<AShooterCharacter>(UGameplayStatics::GetPlayerPawn(this, 0));
+	if (Player) UGameplayStatics::PlaySoundAtLocation(this, IntroSound, Player->GetActorLocation());
+	
 
 	TArray<AActor*> Enemies;
 	UGameplayStatics::GetAllActorsOfClass(this, AShooterCharacter::StaticClass(), Enemies);
