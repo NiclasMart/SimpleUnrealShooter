@@ -9,6 +9,8 @@
 #include "GameFramework/Actor.h"
 #include "Health.h"
 #include "Weapon.h"
+#include "GameFramework/SpringArmComponent.h"
+#include "Math/UnrealMathUtility.h"
 
 // Sets default values
 AShooterCharacter::AShooterCharacter()
@@ -25,7 +27,9 @@ void AShooterCharacter::BeginPlay()
 	SpawnWeapons();
 
 	CharacterController = GetController();
-	HealthComponent = Cast<UHealth>(GetComponentByClass(UHealth::StaticClass()));
+	//HealthComponent = Cast<UHealth>(GetComponentByClass(UHealth::StaticClass()));
+	CameraArmComp = Cast<USpringArmComponent>(GetComponentByClass(USpringArmComponent::StaticClass()));
+	if (CameraArmComp) BaseAimLevel = CameraArmComp->TargetArmLength;
 }
 
 void AShooterCharacter::Tick(float DeltaTime)
@@ -42,11 +46,13 @@ void AShooterCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 
 	PlayerInputComponent->BindAction(TEXT("Jump"), IE_Pressed, this, &ACharacter::Jump);
 
+	PlayerInputComponent->BindAction<FActionDelegateBool>(TEXT("ZoomView"), IE_Pressed, this, &AShooterCharacter::SetAimCamera, true);
+	PlayerInputComponent->BindAction<FActionDelegateBool>(TEXT("ZoomView"), IE_Released, this, &AShooterCharacter::SetAimCamera, false);
 	PlayerInputComponent->BindAction(TEXT("Shoot"), IE_Pressed, this, &AShooterCharacter::StartFireWeapon);
 	PlayerInputComponent->BindAction(TEXT("Shoot"), IE_Released, this, &AShooterCharacter::StopFireWeapon);
 	PlayerInputComponent->BindAxis(TEXT("SwitchWeapon"), this, &AShooterCharacter::SwitchWeapon);
-	PlayerInputComponent->BindAction<FActionDelegate>(TEXT("SwitchToPrimaryWeapon"), IE_Pressed, this, &AShooterCharacter::SwitchWeaponTo, 0);
-	PlayerInputComponent->BindAction<FActionDelegate>(TEXT("SwitchToSecondaryWeapon"), IE_Pressed, this, &AShooterCharacter::SwitchWeaponTo, 1);
+	PlayerInputComponent->BindAction<FActionDelegateInt>(TEXT("SwitchToPrimaryWeapon"), IE_Pressed, this, &AShooterCharacter::SwitchWeaponTo, 0);
+	PlayerInputComponent->BindAction<FActionDelegateInt>(TEXT("SwitchToSecondaryWeapon"), IE_Pressed, this, &AShooterCharacter::SwitchWeaponTo, 1);
 
 	PlayerInputComponent->BindAxis(TEXT("MoveForward"), this, &AShooterCharacter::MoveForward);
 	PlayerInputComponent->BindAxis(TEXT("MoveSideways"), this, &AShooterCharacter::MoveSideways);
@@ -56,6 +62,15 @@ void AShooterCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 	//controller bindings
 	PlayerInputComponent->BindAxis(TEXT("LookUpRate"), this, &AShooterCharacter::LookUpRate);
 	PlayerInputComponent->BindAxis(TEXT("TurnRate"), this, &AShooterCharacter::TurnRate);
+}
+
+void AShooterCharacter::SetAimCamera(bool bZoomActive)
+{
+	if (!CameraArmComp) return;
+
+	float CurrentDistance = CameraArmComp->TargetArmLength;
+	if (bZoomActive) CameraArmComp->TargetArmLength = FMath::Max(CurrentDistance - ZoomDistance, 50.f);
+	else CameraArmComp->TargetArmLength = BaseAimLevel;
 }
 
 void AShooterCharacter::SwitchWeapon(float Value)

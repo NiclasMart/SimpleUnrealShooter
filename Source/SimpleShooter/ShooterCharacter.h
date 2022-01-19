@@ -13,7 +13,8 @@ class SIMPLESHOOTER_API AShooterCharacter : public ACharacter
 {
 	GENERATED_BODY()
 
-	DECLARE_DELEGATE_OneParam(FActionDelegate, int32);
+	DECLARE_DELEGATE_OneParam(FActionDelegateInt, int32);
+	DECLARE_DELEGATE_OneParam(FActionDelegateBool, bool);
 
 public:
 	// Sets default values for this character's properties
@@ -44,6 +45,8 @@ private:
 		float LookAroundSpeedMouse = 1.f;
 	UPROPERTY(EditAnywhere, Category = "Movement")
 		float LookAroundSpeedController = 1.f;
+	UPROPERTY(EditAnywhere)
+		float ZoomDistance = 100.f;
 
 	UPROPERTY(EditDefaultsOnly)
 		TArray<TSubclassOf<class AWeapon>> WeaponBlueprints;
@@ -52,15 +55,18 @@ private:
 	UPROPERTY()
 		int32 ActiveWeaponIndex;
 
+	UPROPERTY()
+		class USpringArmComponent* CameraArmComp;
 	UPROPERTY(EditAnywhere)
 		class UHealth* HealthComponent;
 	UPROPERTY()
 		class AController* CharacterController;
 
 	bool bHoldingWeaponTrigger = false;
+	float BaseAimLevel = 0;
 
 	
-
+	void SetAimCamera(bool bZoomActive);
 	void SwitchWeapon(float Value);
 	void SwitchWeaponTo(int32 Index);
 
