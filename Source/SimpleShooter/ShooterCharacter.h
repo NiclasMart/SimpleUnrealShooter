@@ -39,15 +39,9 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 private:
-	UPROPERTY(EditAnywhere, Category="Movement")
-		float ForwardMovementSpeed = 1.f;
-	UPROPERTY(EditAnywhere, Category = "Movement")
-		float LookAroundSpeedMouse = 1.f;
-	UPROPERTY(EditAnywhere, Category = "Movement")
-		float LookAroundSpeedController = 1.f;
+	
 	UPROPERTY(EditAnywhere)
 		float ZoomDistance = 100.f;
-
 	UPROPERTY(EditDefaultsOnly)
 		TArray<TSubclassOf<class AWeapon>> WeaponBlueprints;
 	UPROPERTY()
@@ -59,6 +53,8 @@ private:
 		class USpringArmComponent* CameraArmComp;
 	UPROPERTY(EditAnywhere)
 		class UHealth* HealthComponent;
+	UPROPERTY(EditAnywhere)
+		class UCharacterMotionComponent* MotionComponent;
 	UPROPERTY()
 		class AController* CharacterController;
 
@@ -67,20 +63,11 @@ private:
 	bool bHoldingWeaponTrigger = false;
 	float BaseAimLevel = 0;
 
-	
+	UFUNCTION()
+		void ResetReloadingTimer();
 	void SetAimCamera(bool bZoomActive);
 	void SwitchWeapon(float Value);
 	void SwitchWeaponTo(int32 Index);
 	void Reloading();
-	UFUNCTION()
-		void ResetReloadingTimer();
-
-	void MoveForward(float Value);
-	void MoveSideways(float Value);
-	void LookUp(float Value);
-	void Turn(float Value);
-	void LookUpRate(float Value);
-	void TurnRate(float Value);
-
 	void SpawnWeapons();	
 };
