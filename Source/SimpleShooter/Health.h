@@ -31,7 +31,7 @@ private:
 	UPROPERTY(EditDefaultsOnly)
 		int32 StartingLife = 100.f;
 
-	int32 CurrentHealth;
+	int32 CurrentHealth = 1;
 	
 
 	UFUNCTION()
