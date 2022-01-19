@@ -48,6 +48,8 @@ private:
 		class USoundBase* MuzzleSound;
 	UPROPERTY(EditAnywhere, Category = "Effects")
 		USoundBase* ImpactSound;
+	UPROPERTY(EditAnywhere, Category = "Effects")
+		USoundBase* CritSound;
 
 	UPROPERTY(EditDefaultsOnly, Category="Stats")
 		int32 MagazinSize = 25;
@@ -59,6 +61,8 @@ private:
 		int32 Range = 2000;
 	UPROPERTY(EditDefaultsOnly, Category = "Stats")
 		float ReloadTime = 2.f;
+	UPROPERTY(EditDefaultsOnly, Category = "Stats")
+		float CritMultiplier = 1.f;
 
 	int32 CurrentAmmunition;
 	float LastShotFired;

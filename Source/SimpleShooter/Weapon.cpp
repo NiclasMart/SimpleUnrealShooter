@@ -61,9 +61,18 @@ void AWeapon::HandleImpact(const FHitResult& Hit)
 {	
 	UGameplayStatics::SpawnEmitterAtLocation(this, ImpactParticles, Hit.Location, Hit.ImpactNormal.Rotation());
 	UGameplayStatics::SpawnSoundAtLocation(this, ImpactSound, Hit.Location);
-
-	if (Hit.GetActor())
-		UGameplayStatics::ApplyDamage(Hit.GetActor(), Damage, GetOwner()->GetInstigatorController(), this, UDamageType::StaticClass());
+	
+	if (!Hit.GetActor()) return;
+	
+	float DamageDealt = Damage;
+	if (Hit.BoneName.ToString().Compare("head") == 0)
+	{
+		DamageDealt *= CritMultiplier;
+		UGameplayStatics::SpawnSoundAtLocation(this, CritSound, Hit.Location);
+	}
+	UGameplayStatics::ApplyDamage(Hit.GetActor(), DamageDealt, GetOwner()->GetInstigatorController(), this, UDamageType::StaticClass());
+	
+		
 }
 
 void AWeapon::PlayFireEffects()
