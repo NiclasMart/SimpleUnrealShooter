@@ -20,6 +20,8 @@ public:
 	void SetAsActiveWeapon();
 	void SetInactive();
 
+	float GetReloadTime() const { return ReloadTime; };
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -53,6 +55,8 @@ private:
 		float Damage = 20;
 	UPROPERTY(EditDefaultsOnly, Category = "Stats")
 		int32 Range = 2000;
+	UPROPERTY(EditDefaultsOnly, Category = "Stats")
+		float ReloadTime = 2.f;
 
 	int32 CurrentAmmunition;
 	float LastShotFired;

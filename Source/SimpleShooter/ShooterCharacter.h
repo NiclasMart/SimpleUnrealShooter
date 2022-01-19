@@ -62,6 +62,8 @@ private:
 	UPROPERTY()
 		class AController* CharacterController;
 
+	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+		bool bIsReloadingWeapon = false;
 	bool bHoldingWeaponTrigger = false;
 	float BaseAimLevel = 0;
 
@@ -69,6 +71,9 @@ private:
 	void SetAimCamera(bool bZoomActive);
 	void SwitchWeapon(float Value);
 	void SwitchWeaponTo(int32 Index);
+	void Reloading();
+	UFUNCTION()
+		void ResetReloadingTimer();
 
 	void MoveForward(float Value);
 	void MoveSideways(float Value);

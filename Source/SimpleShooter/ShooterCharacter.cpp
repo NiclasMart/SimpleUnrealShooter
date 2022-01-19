@@ -11,6 +11,7 @@
 #include "Weapon.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Math/UnrealMathUtility.h"
+#include "TimerManager.h"
 
 // Sets default values
 AShooterCharacter::AShooterCharacter()
@@ -36,7 +37,7 @@ void AShooterCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (bHoldingWeaponTrigger) FireWeapon();
+	if (bHoldingWeaponTrigger && !bIsReloadingWeapon) FireWeapon();
 }
 
 // Called to bind functionality to input
@@ -50,6 +51,7 @@ void AShooterCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 	PlayerInputComponent->BindAction<FActionDelegateBool>(TEXT("ZoomView"), IE_Released, this, &AShooterCharacter::SetAimCamera, false);
 	PlayerInputComponent->BindAction(TEXT("Shoot"), IE_Pressed, this, &AShooterCharacter::StartFireWeapon);
 	PlayerInputComponent->BindAction(TEXT("Shoot"), IE_Released, this, &AShooterCharacter::StopFireWeapon);
+	PlayerInputComponent->BindAction(TEXT("Reload"), IE_Pressed, this, &AShooterCharacter::Reloading);
 	PlayerInputComponent->BindAxis(TEXT("SwitchWeapon"), this, &AShooterCharacter::SwitchWeapon);
 	PlayerInputComponent->BindAction<FActionDelegateInt>(TEXT("SwitchToPrimaryWeapon"), IE_Pressed, this, &AShooterCharacter::SwitchWeaponTo, 0);
 	PlayerInputComponent->BindAction<FActionDelegateInt>(TEXT("SwitchToSecondaryWeapon"), IE_Pressed, this, &AShooterCharacter::SwitchWeaponTo, 1);
@@ -102,6 +104,28 @@ void AShooterCharacter::SwitchWeaponTo(int32 Index)
 	Weapons[ActiveWeaponIndex]->SetInactive();
 	ActiveWeaponIndex = Index;
 	Weapons[ActiveWeaponIndex]->SetAsActiveWeapon();
+}
+
+void AShooterCharacter::Reloading()
+{
+	if (bIsReloadingWeapon) return;
+
+	UE_LOG(LogTemp, Warning, TEXT("Reloading: %f"), Weapons[ActiveWeaponIndex]->GetReloadTime());
+	FTimerHandle ReloadingTimer = FTimerHandle();
+	GetWorldTimerManager().SetTimer(
+		ReloadingTimer,
+		this, 
+		&AShooterCharacter::ResetReloadingTimer,
+		Weapons[ActiveWeaponIndex]->GetReloadTime()
+	);
+	Weapons[ActiveWeaponIndex]->Reload();
+	bIsReloadingWeapon = true;
+}
+
+void AShooterCharacter::ResetReloadingTimer()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Reset Reloading"));
+	bIsReloadingWeapon = false;
 }
 
 void AShooterCharacter::MoveForward(float Value)
@@ -173,7 +197,7 @@ void AShooterCharacter::FireWeapon()
 	CharacterController->GetPlayerViewPoint(Location, Rotation);
 
 	bool MunitionWasEmpty = !Weapons[ActiveWeaponIndex]->PullTrigger(Location, Rotation.Vector());
-	if (MunitionWasEmpty) Weapons[ActiveWeaponIndex]->Reload();
+	if (MunitionWasEmpty) Reloading();
 }
 
 void AShooterCharacter::SpawnWeapons()
