@@ -16,10 +16,9 @@ public:
 	AWeapon();
 
 	bool PullTrigger(FVector AimLocation, FVector AimDirection);
-
-	
-
 	void Reload();
+	void SetAsActiveWeapon();
+	void SetInactive();
 
 protected:
 	// Called when the game starts or when spawned

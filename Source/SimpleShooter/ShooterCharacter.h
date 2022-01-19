@@ -6,10 +6,14 @@
 #include "GameFramework/Character.h"
 #include "ShooterCharacter.generated.h"
 
+
+
 UCLASS()
 class SIMPLESHOOTER_API AShooterCharacter : public ACharacter
 {
 	GENERATED_BODY()
+
+	DECLARE_DELEGATE_OneParam(FActionDelegate, int32);
 
 public:
 	// Sets default values for this character's properties
@@ -42,16 +46,23 @@ private:
 		float LookAroundSpeedController = 1.f;
 
 	UPROPERTY(EditDefaultsOnly)
-		TSubclassOf<class AWeapon> WeaponBlueprint;
-
+		TArray<TSubclassOf<class AWeapon>> WeaponBlueprints;
 	UPROPERTY()
-		AWeapon* Weapon;
+		TArray<AWeapon*> Weapons;
+	UPROPERTY()
+		int32 ActiveWeaponIndex;
+
 	UPROPERTY(EditAnywhere)
 		class UHealth* HealthComponent;
 	UPROPERTY()
 		class AController* CharacterController;
 
 	bool bHoldingWeaponTrigger = false;
+
+	
+
+	void SwitchWeapon(float Value);
+	void SwitchWeaponTo(int32 Index);
 
 	void MoveForward(float Value);
 	void MoveSideways(float Value);
@@ -60,5 +71,5 @@ private:
 	void LookUpRate(float Value);
 	void TurnRate(float Value);
 
-	
+	void SpawnWeapons();	
 };
