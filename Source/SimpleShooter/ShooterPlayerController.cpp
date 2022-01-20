@@ -1,5 +1,5 @@
-// Fill out your copyright notice in the Description page of Project Settings.
 
+// Fill out your copyright notice in the Description page of Project Settings.
 
 #include "ShooterPlayerController.h"
 
@@ -44,7 +44,4 @@ void AShooterPlayerController::ShowEndscreen(bool bIsWinner)
 	bShowMouseCursor = true;
 	SetInputMode(FInputModeUIOnly());
 	LoseScreen->AddToViewport();
-	
-
-	
 }
